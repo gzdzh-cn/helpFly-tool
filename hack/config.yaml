@@ -1,0 +1,10 @@
+# GoFrame development and code generation configuration.
+# The runtime database path is resolved by service/db and is not tied to this file.
+gfcli:
+  gen:
+    dao:
+      - link: "sqlite::@file(./resource/app.db)"
+        path: "internal"
+        tables: "tasks,task_channels,task_summaries,consumptions,exports,pause_points,system_parameters,system_parameter_options,kv_store"
+        jsonCase: "CamelLower"
+        stdTime: true
