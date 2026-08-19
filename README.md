@@ -23,7 +23,76 @@ cd frontend && npx vite build   # 仅构建/校验前端
 
 应用窗口默认大小为 `1280 × 800`，可在 `main.go` 的窗口配置中调整。
 
-## 3. 数据存储位置
+## 3. 打包与分发
+
+`wails3 package` 在各平台都会产出可直接运行的程序包（macOS 为 `.app`，Windows 为 `.exe` 或安装包，Linux 为可执行文件或 `.deb`/`.AppImage`）。
+
+### 3.1 各平台打包命令
+
+Wails3 的打包任务是平台相关的，**在哪个平台上运行，就打出哪个平台的包**。Go 也支持交叉编译，但打包成桌面安装包（`.app` / `.msi` / `.dmg`）通常必须在目标系统上执行，因为它们依赖各自平台的签名、图标与安装器工具链。
+
+| 目标平台 | 执行环境 | 一键打包命令 | 产出 |
+| --- | --- | --- | --- |
+| macOS | 在 macOS 上 | `wails3 package` | `bin/helpFly.app` |
+| macOS（带可拖拽安装窗口的 DMG） | 在 macOS 上 | `wails3 task darwin:package:macdmg` | `bin/helpFly.dmg`（含 Applications 链接） |
+| macOS 通用二进制（Intel + Apple 芯片） | 在 macOS 上 | `wails3 task darwin:package:universal` | 通用 `bin/helpFly.app` |
+| Windows | 在 Windows 上 | `wails3 task windows:package:installer` | `bin/helpFly-installer.exe`（NSIS 安装包，含 WebView2 引导器） |
+| Linux | 在 Linux 上 | `wails3 package` | 可执行文件 / `.deb` / `.AppImage` 等 |
+
+> 注意：跨平台只能做到「交叉编译出二进制」，完整安装包（含图标、签名、注册表/桌面集成）必须在目标系统上执行对应命令。CI 中可用 GitHub Actions 矩阵分别在各平台 runner 上执行对应命令。
+> Windows 的 NSIS 安装包依赖 `makensis` 与 WebView2 bootstrapper，**只能在 Windows 上打包**；macOS 的 DMG 同理只能在 macOS 上打包。
+
+### 3.2 打包 macOS DMG（带「拖入应用程序」安装窗口）
+
+`hails3 package` 只产出 `.app`，不会生成 DMG。要想挂载后出现「把 app 拖到 Applications 文件夹」的安装窗口，需要在镜像里放入一个指向 `/Applications` 的**符号链接**，再封成 DMG。
+
+#### 推荐：一条命令搞定（零依赖）
+
+本项目已在 `build/darwin/Taskfile.yml` 中封装好 `package:macdmg` 任务，它会依次完成「编译 → 打包 `.app` → 加 Applications 符号链接 → 生成 DMG」，全程仅用 macOS 自带的 `hdiutil`，无需安装任何第三方工具：
+
+```bash
+# 在 macOS 上执行，一步产出 bin/helpFly.dmg（带可拖拽安装窗口）
+wails3 task darwin:package:macdmg
+```
+
+完成后 `bin/helpFly.dmg` 即为可分发的安装镜像：双击挂载后，窗口里同时显示 `helpFly.app` 和 `Applications` 文件夹图标，**把 app 拖到 Applications 即可完成安装**。
+
+#### 手动分步（等价于上面的命令，便于理解或非 Task 环境使用）
+
+```bash
+# 1) 生成 .app 包（已包含前端构建与后端编译）
+wails3 package
+
+# 2) 准备 DMG 暂存目录：放入 app + 一个名为 Applications 的符号链接
+DMG_STAGING=/tmp/helpFly-dmg
+rm -rf "$DMG_STAGING"
+mkdir -p "$DMG_STAGING"
+cp -R bin/helpFly.app "$DMG_STAGING/"
+# 关键：创建指向系统「应用程序」文件夹的符号链接，拖拽时即安装到 /Applications
+ln -s /Applications "$DMG_STAGING/Applications"
+
+# 3) 生成可拖拽安装的 DMG（无需额外依赖，使用 macOS 自带 hdiutil）
+hdiutil create -volname "helpFly" \
+  -srcfolder "$DMG_STAGING" \
+  -ov -format UDZO \
+  bin/helpFly.dmg
+
+# 4) 清理暂存目录
+rm -rf "$DMG_STAGING"
+```
+
+#### 可选：美化安装窗口（背景图、图标排列）
+
+上面的方案已满足「可拖拽安装」的核心需求。若想进一步定制窗口背景、图标位置与大小（让 app 与 Applications 并排、居中对齐），可改用第三方 `create-dmg` 工具：
+
+```bash
+npm i -g create-dmg
+create-dmg bin/helpFly.dmg bin/helpFly.app --volname "helpFly" --overwrite
+```
+
+> 提示：`wails3 task darwin:package:macdmg`（基于 `hdiutil`）零依赖、最稳妥；`create-dmg` 更美观但依赖第三方包，可按需选择。
+
+## 4. 数据存储位置
 
 应用使用 SQLite 本地数据库，文件位置随「开发 / 生产」环境自动切换：
 

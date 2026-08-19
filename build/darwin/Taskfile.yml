@@ -58,6 +58,20 @@ tasks:
     cmds:
       - task: create:app:bundle
 
+  # 一条命令完成：打包 .app → 制作可拖拽安装的 DMG（含 Applications 符号链接）
+  # 依赖 package 任务产出的 .app，无需任何第三方依赖（仅用 macOS 自带 hdiutil）
+  package:macdmg:
+    summary: Packages a production build into a `.app` and wraps it in a draggable-install DMG
+    deps:
+      - task: package
+    cmds:
+      - rm -rf "{{.BIN_DIR}}/dmg-staging"
+      - mkdir -p "{{.BIN_DIR}}/dmg-staging"
+      - cp -R "{{.BIN_DIR}}/{{.APP_NAME}}.app" "{{.BIN_DIR}}/dmg-staging/"
+      - ln -s /Applications "{{.BIN_DIR}}/dmg-staging/Applications"
+      - hdiutil create -volname "{{.APP_NAME}}" -srcfolder "{{.BIN_DIR}}/dmg-staging" -ov -format UDZO "{{.BIN_DIR}}/{{.APP_NAME}}.dmg"
+      - rm -rf "{{.BIN_DIR}}/dmg-staging"
+
 
   create:app:bundle:
     summary: Creates an `.app` bundle
