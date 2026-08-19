@@ -44,7 +44,7 @@ Wails3 的打包任务是平台相关的，**在哪个平台上运行，就打�
 
 ### 3.2 打包 macOS DMG（带「拖入应用程序」安装窗口）
 
-`hails3 package` 只产出 `.app`，不会生成 DMG。要想挂载后出现「把 app 拖到 Applications 文件夹」的安装窗口，需要在镜像里放入一个指向 `/Applications` 的**符号链接**，再封成 DMG。
+`wails3 package` 只产出 `.app`，不会生成 DMG。要想挂载后出现「把 app 拖到 Applications 文件夹」的安装窗口，需要在镜像里放入一个指向 `/Applications` 的**符号链接**，再封成 DMG。
 
 #### 推荐：一条命令搞定（零依赖）
 
@@ -107,7 +107,7 @@ create-dmg bin/helpFly.dmg bin/helpFly.app --volname "helpFly" --overwrite
 > 首次启动会自动创建目录与数据表，无需手动初始化。
 > 如需自定义路径，可设置环境变量 `GOFLY_DB_PATH` 指定，优先级最高。
 
-## 4. 启动后建议体验
+## 5. 启动后建议体验
 1. 左侧主菜单进入「首页」，查看演示卡片。
 2. 进入「数据」→ **账单列表**，体验真实数据库的增删改查、导出与高级搜索。
 3. 点击顶栏「设置」，尝试主题切换与各类窗口调试能力。
@@ -151,7 +151,7 @@ create-dmg bin/helpFly.dmg bin/helpFly.app --volname "helpFly" --overwrite
 ```
 项目根目录/
 ├── main.go              # 程序入口：创建窗口、注册服务、监听事件
-├── wails.json           # 打包配置
+├── build/               # 打包配置（build/config.yml 等）
 ├── frontend/            # 前端工程
 │   └── src/
 │       ├── main.ts      # 前端入口
@@ -197,27 +197,26 @@ create-dmg bin/helpFly.dmg bin/helpFly.app --volname "helpFly" --overwrite
 
 ### 界面预览（亮色主题）
 
+> 在本文档站中，**点击任意截图即可在原页内放大查看**；再次点击遮罩或按 Esc 即可关闭预览。
 > 以下截图按页面顺序展示：首页 → 账单列表 → 表单演示 → 图标专栏 → 图表分析 → 通用组件 → 参数设置 → 设置页。
 
 | 首页 | 账单列表 | 表单演示 | 图标专栏 |
 | --- | --- | --- | --- |
-| <a href="docs/images/亮色-1.jpg" target="_blank"><img src="docs/images/亮色-1.jpg" alt="首页-亮色" style="width:100%"></a> | <a href="docs/images/亮色-2.jpg" target="_blank"><img src="docs/images/亮色-2.jpg" alt="账单列表-亮色" style="width:100%"></a> | <a href="docs/images/亮色-3.jpg" target="_blank"><img src="docs/images/亮色-3.jpg" alt="表单演示-亮色" style="width:100%"></a> | <a href="docs/images/亮色-4.jpg" target="_blank"><img src="docs/images/亮色-4.jpg" alt="图标专栏-亮色" style="width:100%"></a> |
+| ![首页-亮色](/images/亮色-1.jpg) | ![账单列表-亮色](/images/亮色-2.jpg) | ![表单演示-亮色](/images/亮色-3.jpg) | ![图标专栏-亮色](/images/亮色-4.jpg) |
 
 | 图表分析 | 通用组件 | 参数设置 | 设置页 |
 | --- | --- | --- | --- |
-| <a href="docs/images/亮色-5.jpg" target="_blank"><img src="docs/images/亮色-5.jpg" alt="图表分析-亮色" style="width:100%"></a> | <a href="docs/images/亮色-6.jpg" target="_blank"><img src="docs/images/亮色-6.jpg" alt="通用组件-亮色" style="width:100%"></a> | <a href="docs/images/亮色-7.jpg" target="_blank"><img src="docs/images/亮色-7.jpg" alt="参数设置-亮色" style="width:100%"></a> | <a href="docs/images/亮色-8.jpg" target="_blank"><img src="docs/images/亮色-8.jpg" alt="设置页-亮色" style="width:100%"></a> |
+| ![图表分析-亮色](/images/亮色-5.jpg) | ![通用组件-亮色](/images/亮色-6.jpg) | ![参数设置-亮色](/images/亮色-7.jpg) | ![设置页-亮色](/images/亮色-8.jpg) |
 
 ### 界面预览（暗色主题）
 
 | 首页 | 账单列表 | 表单演示 | 图标专栏 |
 | --- | --- | --- | --- |
-| <a href="docs/images/暗色-1.jpg" target="_blank"><img src="docs/images/暗色-1.jpg" alt="首页-暗色" style="width:100%"></a> | <a href="docs/images/暗色-2.jpg" target="_blank"><img src="docs/images/暗色-2.jpg" alt="账单列表-暗色" style="width:100%"></a> | <a href="docs/images/暗色-3.jpg" target="_blank"><img src="docs/images/暗色-3.jpg" alt="表单演示-暗色" style="width:100%"></a> | <a href="docs/images/暗色-4.jpg" target="_blank"><img src="docs/images/暗色-4.jpg" alt="图标专栏-暗色" style="width:100%"></a> |
+| ![首页-暗色](/images/暗色-1.jpg) | ![账单列表-暗色](/images/暗色-2.jpg) | ![表单演示-暗色](/images/暗色-3.jpg) | ![图标专栏-暗色](/images/暗色-4.jpg) |
 
 | 图表分析 | 通用组件 | 参数设置 | 设置页 |
 | --- | --- | --- | --- |
-| <a href="docs/images/暗色-5.jpg" target="_blank"><img src="docs/images/暗色-5.jpg" alt="图表分析-暗色" style="width:100%"></a> | <a href="docs/images/暗色-6.jpg" target="_blank"><img src="docs/images/暗色-6.jpg" alt="通用组件-暗色" style="width:100%"></a> | <a href="docs/images/暗色-7.jpg" target="_blank"><img src="docs/images/暗色-7.jpg" alt="参数设置-暗色" style="width:100%"></a> | <a href="docs/images/暗色-8.jpg" target="_blank"><img src="docs/images/暗色-8.jpg" alt="设置页-暗色" style="width:100%"></a> |
-
-> 提示：截图均以 `<a>` 包裹 `<img>` 实现点击放大——点击任意图片会在新标签页打开高清原图（`.jpg`）。若站点支持灯箱（如 VitePress），点击即可在原页内放大。
+| ![图表分析-暗色](/images/暗色-5.jpg) | ![通用组件-暗色](/images/暗色-6.jpg) | ![参数设置-暗色](/images/暗色-7.jpg) | ![设置页-暗色](/images/暗色-8.jpg) |
 
 ## 5. 后端服务
 
