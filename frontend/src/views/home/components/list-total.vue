@@ -60,7 +60,7 @@ const links = [
       justify-content: center;
 
       .icon {
-        color: #fff;
+        color: rgb(var(--primary-6));
         font-size: 26px;
       }
 
@@ -84,19 +84,19 @@ const links = [
         .value {
           font-size: 24px;
           font-weight: bold;
-          color: #fff;
+          color: var(--color-text-1);
         }
 
         .unit {
           font-size: 12px;
-          color: #c2c1c1;
+          color: var(--color-text-3);
         }
       }
 
       .text-title {
         font-size: 12px;
         // font-weight: bold;
-        color: #fff;
+        color: var(--color-text-3);
       }
 
     }
