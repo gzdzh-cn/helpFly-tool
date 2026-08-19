@@ -14,6 +14,10 @@ export default defineConfig({
   themeConfig: {
     nav: [
       { text: '首页', link: '/' },
+      { text: 'GitHub 仓库', link: 'https://github.com/gzdzh-cn/helpFly-tool' },
+    ],
+    socialLinks: [
+      { icon: 'github', link: 'https://github.com/gzdzh-cn/helpFly-tool' },
     ],
     sidebar: [
       {

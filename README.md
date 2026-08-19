@@ -2,6 +2,8 @@
 
 一款基于 **Wails3 + Vue3 + ArcoDesign + GoFrame** 的桌面端应用脚手架。
 
+项目仓库：[gzdzh-cn/helpFly-tool](https://github.com/gzdzh-cn/helpFly-tool)
+
 它不只是一个 Demo，而是一套**开箱即用的桌面程序骨架**：内置多个常见业务页面的范例（表单、图标、图表、组件），并附带一个**真正对接数据库、可增删改查的账单模块**。你只需在它的基础上修改，就能快速拥有自己的桌面应用。
 
 ---
